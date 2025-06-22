@@ -1,0 +1,27 @@
+---
+- hosts: local
+  become: yes
+  tasks:
+    - name: Stop any running container
+      command: docker stop task-manager-container
+      ignore_errors: yes
+      register: stop_result
+
+    - name: Remove stopped container
+      command: docker rm task-manager-container
+      ignore_errors: yes
+      when: stop_result is not failed
+
+    - name: Pull the latest image
+      docker_image:
+        name: your-dockerhub-username/task-manager
+        tag: latest
+        source: pull
+
+    - name: Run the container
+      docker_container:
+        name: task-manager-container
+        image: your-dockerhub-username/task-manager:latest
+        ports:
+          - "8080:8080"
+        restart_policy: unless-stopped
