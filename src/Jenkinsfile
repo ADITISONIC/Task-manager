@@ -1,43 +1,24 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-username/task-manager.git'
-            }
-        }
-        
+                git branch: 'main', url: 'https://github.com/your-username/task-manager.git'} }
         stage('Build') {
             steps {
-                sh 'mvn clean package'
-            }
-        }
-        
+                sh 'mvn clean package'}}
         stage('Test') {
             steps {
-                sh 'mvn test'
-            }
-        }
-        
+                sh 'mvn test'}}
         stage('Docker Build') {
             steps {
                 script {
-                    docker.build("your-dockerhub-username/task-manager:${env.BUILD_ID}")
-                }
-            }
-        }
-        
+                    docker.build("your-dockerhub-username/task-manager:${env.BUILD_ID}")}}}
         stage('Docker Push') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        docker.image("your-dockerhub-username/task-manager:${env.BUILD_ID}").push()
-                    }
-                }
-            }
-        }
-        
+                        docker.image("your-dockerhub-username/task-manager:${env.BUILD_ID}").push()}}} }
         stage('Deploy') {
             steps {
                 ansiblePlaybook(
